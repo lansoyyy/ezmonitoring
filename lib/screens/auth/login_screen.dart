@@ -18,6 +18,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final username = TextEditingController();
   final password = TextEditingController();
 
+  String? selectedRole; // This will hold the selected value
+
   bool inLogin = true;
   @override
   Widget build(BuildContext context) {
@@ -40,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 20,
             ),
             TextWidget(
-              text: 'Admin Account',
+              text: 'Login',
               fontSize: 18,
               fontFamily: 'Bold',
             ),
@@ -51,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 45,
               color: Colors.white,
               borderColor: Colors.white,
-              label: 'Admin ID',
+              label: 'Username',
               controller: username,
             ),
             const SizedBox(
@@ -65,6 +67,48 @@ class _LoginScreenState extends State<LoginScreen> {
               showEye: true,
               isObscure: true,
               controller: password,
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              width: 300,
+              height: 50,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: DropdownButton<String>(
+                  underline: const SizedBox(),
+                  value: selectedRole,
+                  hint: const Text('Select Role'),
+                  items: [
+                    DropdownMenuItem(
+                      value: 'Admin',
+                      child: TextWidget(
+                        text: 'Admin',
+                        fontSize: 18,
+                        color: Colors.black,
+                      ),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Personnel',
+                      child: TextWidget(
+                        text: 'Personnel',
+                        fontSize: 18,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      selectedRole = value;
+                    });
+                  },
+                ),
+              ),
             ),
             const SizedBox(
               height: 20,
