@@ -1,5 +1,9 @@
 import 'package:ezmonitoring/screens/auth/login_screen.dart';
 import 'package:ezmonitoring/screens/tabs/dashboard_tab.dart';
+import 'package:ezmonitoring/screens/tabs/employee_tab.dart';
+import 'package:ezmonitoring/screens/tabs/monitoring_tab.dart';
+import 'package:ezmonitoring/screens/tabs/report_tab.dart';
+import 'package:ezmonitoring/screens/tabs/visitors_tab.dart';
 
 import 'package:ezmonitoring/utils/colors.dart';
 import 'package:ezmonitoring/widgets/logout_widget.dart';
@@ -90,6 +94,10 @@ class _HomeScreenState extends State<HomeScreen> {
               index: index,
               children: const [
                 DashboardTab(),
+                MonitoringTab(),
+                EmployeeTab(),
+                VisitorsTab(),
+                ReportTab(),
               ],
             ),
           )),
