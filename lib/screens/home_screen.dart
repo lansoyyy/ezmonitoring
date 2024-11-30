@@ -11,7 +11,9 @@ import 'package:ezmonitoring/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  String type;
+
+  HomeScreen({super.key, required this.type});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -26,6 +28,11 @@ class _HomeScreenState extends State<HomeScreen> {
     'Employee',
     'Visitors',
     'Report Logs'
+  ];
+
+  List items1 = [
+    'Monitoring',
+    'Visitors',
   ];
   @override
   Widget build(BuildContext context) {
@@ -60,29 +67,74 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  for (int i = 0; i < items.length; i++)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 5, top: 5),
-                      child: Card(
-                        color: Colors.white,
-                        child: SizedBox(
-                          width: 200,
-                          child: ListTile(
-                            onTap: () {
-                              setState(() {
-                                index = i;
-                              });
-                            },
-                            title: TextWidget(
-                              text: items[i],
-                              fontSize: 18,
-                              fontFamily: 'Bold',
-                              color: index == i ? Colors.blue : Colors.black,
+                  if (widget.type == 'Admin')
+                    for (int i = 0; i < items.length; i++)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 5, top: 5),
+                        child: Card(
+                          color: Colors.white,
+                          child: SizedBox(
+                            width: 200,
+                            child: ListTile(
+                              onTap: () {
+                                setState(() {
+                                  index = i;
+                                });
+                              },
+                              title: TextWidget(
+                                text: items[i],
+                                fontSize: 18,
+                                fontFamily: 'Bold',
+                                color: index == i ? Colors.blue : Colors.black,
+                              ),
                             ),
                           ),
                         ),
                       ),
+                  if (widget.type == 'Personnel')
+                    for (int i = 0; i < items1.length; i++)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 5, top: 5),
+                        child: Card(
+                          color: Colors.white,
+                          child: SizedBox(
+                            width: 200,
+                            child: ListTile(
+                              onTap: () {
+                                setState(() {
+                                  index = i;
+                                });
+                              },
+                              title: TextWidget(
+                                text: items1[i],
+                                fontSize: 18,
+                                fontFamily: 'Bold',
+                                color: index == i ? Colors.blue : Colors.black,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 5, top: 5),
+                    child: Card(
+                      color: Colors.white,
+                      child: SizedBox(
+                        width: 200,
+                        child: ListTile(
+                          onTap: () {
+                            logout(context, const LoginScreen());
+                          },
+                          title: TextWidget(
+                            text: 'Logout',
+                            fontSize: 18,
+                            fontFamily: 'Bold',
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
                     ),
+                  ),
                 ],
               ),
             ),
@@ -92,13 +144,18 @@ class _HomeScreenState extends State<HomeScreen> {
             color: Colors.grey[100],
             child: IndexedStack(
               index: index,
-              children: const [
-                DashboardTab(),
-                MonitoringTab(),
-                EmployeeTab(),
-                VisitorsTab(),
-                ReportTab(),
-              ],
+              children: widget.type == 'Personnel'
+                  ? [
+                      const MonitoringTab(),
+                      const VisitorsTab(),
+                    ]
+                  : [
+                      const DashboardTab(),
+                      const MonitoringTab(),
+                      const EmployeeTab(),
+                      const VisitorsTab(),
+                      const ReportTab(),
+                    ],
             ),
           )),
         ],

@@ -35,7 +35,7 @@ class DashboardTab extends StatelessWidget {
                       ),
                       TextWidget(
                         text: 'Total Employees',
-                        fontSize: 32,
+                        fontSize: 28,
                         fontFamily: 'Bold',
                         color: Colors.white,
                       ),
@@ -44,7 +44,7 @@ class DashboardTab extends StatelessWidget {
                       ),
                       TextWidget(
                         text: '75',
-                        fontSize: 65,
+                        fontSize: 50,
                         fontFamily: 'Bold',
                         color: Colors.white,
                       ),
@@ -72,7 +72,7 @@ class DashboardTab extends StatelessWidget {
                       ),
                       TextWidget(
                         text: 'Total Visitors',
-                        fontSize: 32,
+                        fontSize: 28,
                         fontFamily: 'Bold',
                         color: Colors.white,
                       ),
@@ -81,7 +81,7 @@ class DashboardTab extends StatelessWidget {
                       ),
                       TextWidget(
                         text: '75',
-                        fontSize: 65,
+                        fontSize: 50,
                         fontFamily: 'Bold',
                         color: Colors.white,
                       ),
@@ -135,7 +135,7 @@ class DashboardTab extends StatelessWidget {
                                 children: [
                                   TextWidget(
                                     text: 'Employees',
-                                    fontSize: 26,
+                                    fontSize: 24,
                                     fontFamily: 'Bold',
                                     color: Colors.white,
                                   ),
@@ -144,7 +144,7 @@ class DashboardTab extends StatelessWidget {
                                   ),
                                   TextWidget(
                                     text: '75',
-                                    fontSize: 32,
+                                    fontSize: 28,
                                     fontFamily: 'Bold',
                                     color: Colors.white,
                                   ),
@@ -156,7 +156,7 @@ class DashboardTab extends StatelessWidget {
                                 children: [
                                   TextWidget(
                                     text: 'Visitors',
-                                    fontSize: 26,
+                                    fontSize: 24,
                                     fontFamily: 'Bold',
                                     color: Colors.white,
                                   ),
@@ -165,7 +165,7 @@ class DashboardTab extends StatelessWidget {
                                   ),
                                   TextWidget(
                                     text: '75',
-                                    fontSize: 32,
+                                    fontSize: 28,
                                     fontFamily: 'Bold',
                                     color: Colors.white,
                                   ),
