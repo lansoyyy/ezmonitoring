@@ -4,6 +4,15 @@ import 'package:ezmonitoring/widgets/text_widget.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'dart:html';
+import 'dart:io' as io;
+import 'package:printing/printing.dart';
+import 'dart:io' as io;
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+
+import 'package:pdf/widgets.dart' as pw;
+import 'package:intl/intl.dart' show DateFormat, toBeginningOfSentenceCase;
 
 class ReportTab extends StatefulWidget {
   const ReportTab({super.key});
@@ -43,6 +52,8 @@ class _ReportTabState extends State<ReportTab> {
     });
   }
 
+  List reports = [];
+
   @override
   Widget build(BuildContext context) {
     return hasLoaded
@@ -51,7 +62,9 @@ class _ReportTabState extends State<ReportTab> {
               child: const Icon(
                 Icons.save,
               ),
-              onPressed: () {},
+              onPressed: () {
+                generatePdf(reports);
+              },
             ),
             body: Padding(
               padding: const EdgeInsets.all(10.0),
@@ -139,6 +152,31 @@ class _ReportTabState extends State<ReportTab> {
                               "Timestamp": innerValue["Timestamp"],
                             };
                           }).toList();
+
+                          for (int i = 0; i < itemList.length; i++) {
+                            reports.add({
+                              'timein': itemList[i]['Timestamp'],
+                              'name': users.where(
+                                (element) {
+                                  return element['id'] ==
+                                      itemList[i]['ID'].toString();
+                                },
+                              ).first['name'],
+                              'number': users.where(
+                                (element) {
+                                  return element['id'] ==
+                                      itemList[i]['ID'].toString();
+                                },
+                              ).first['number'],
+                              'id': itemList[i]['ID'].toString(),
+                              'type': users.where(
+                                (element) {
+                                  return element['id'] ==
+                                      itemList[i]['ID'].toString();
+                                },
+                              ).first['type'],
+                            });
+                          }
 
                           return Container(
                             child: DataTable(
@@ -300,5 +338,91 @@ class _ReportTabState extends State<ReportTab> {
         : const Center(
             child: CircularProgressIndicator(),
           );
+  }
+
+  void generatePdf(List tableDataList) async {
+    print('users 111 $tableDataList');
+    final pdf = pw.Document(
+      pageMode: PdfPageMode.fullscreen,
+    );
+    List<String> tableHeaders = [
+      'ID',
+      'Name',
+      'Contact Number',
+      'Date',
+      'Time In',
+      'Time Out',
+      'Visitor/Personnel'
+    ];
+
+    String cdate2 = DateFormat("MMMM, dd, yyyy").format(DateTime.now());
+
+    List<List<String>> tableData = [];
+    for (var i = 0; i < tableDataList.length; i++) {
+      tableData.add([
+        tableDataList[i]['id'],
+        tableDataList[i]['name'],
+        tableDataList[i]['number'],
+        DateFormat('yyyy-MM-dd').format(DateTime.now()),
+        tableDataList[i]['timein'],
+        'N/A',
+        tableDataList[i]['type'],
+      ]);
+    }
+
+    pdf.addPage(
+      pw.MultiPage(
+        pageFormat: PdfPageFormat.a3,
+        orientation: pw.PageOrientation.landscape,
+        build: (context) => [
+          pw.Align(
+            alignment: pw.Alignment.center,
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.center,
+              children: [
+                pw.Text('EZ Monitoring',
+                    style: const pw.TextStyle(
+                      fontSize: 18,
+                    )),
+                pw.SizedBox(height: 10),
+                pw.Text(
+                  style: const pw.TextStyle(
+                    fontSize: 15,
+                  ),
+                  'Reports',
+                ),
+                pw.SizedBox(height: 5),
+                pw.Text(
+                  style: const pw.TextStyle(
+                    fontSize: 10,
+                  ),
+                  cdate2,
+                ),
+              ],
+            ),
+          ),
+          pw.SizedBox(height: 20),
+          pw.Table.fromTextArray(
+            headers: tableHeaders,
+            data: tableData,
+            headerDecoration: const pw.BoxDecoration(),
+            rowDecoration: const pw.BoxDecoration(),
+            headerHeight: 25,
+            cellHeight: 45,
+            cellAlignments: {
+              0: pw.Alignment.centerLeft,
+              1: pw.Alignment.center,
+            },
+          ),
+          pw.SizedBox(height: 20),
+        ],
+      ),
+    );
+
+    await Printing.layoutPdf(onLayout: (format) async => pdf.save());
+
+    final output = await getTemporaryDirectory();
+    final file = io.File("${output.path}/report.pdf");
+    await file.writeAsBytes(await pdf.save());
   }
 }
