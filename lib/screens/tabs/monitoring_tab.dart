@@ -180,7 +180,7 @@ class _MonitoringTabState extends State<MonitoringTab> {
                               ),
                             ],
                             rows: [
-                              for (int i = 0; i < itemList.length; i++)
+                              for (int i = 0; i < users.length; i++)
                                 DataRow(cells: [
                                   DataCell(
                                     TextWidget(

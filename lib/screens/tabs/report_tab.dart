@@ -1,19 +1,16 @@
+import 'dart:html' as html if (dart.library.io) 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ezmonitoring/utils/colors.dart';
 import 'package:ezmonitoring/widgets/text_widget.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'dart:html';
-import 'dart:io' as io;
-import 'package:printing/printing.dart';
-import 'dart:io' as io;
-import 'package:path_provider/path_provider.dart';
-import 'package:pdf/pdf.dart';
-
-import 'package:pdf/widgets.dart' as pw;
 import 'package:intl/intl.dart' show DateFormat, toBeginningOfSentenceCase;
-
+import 'package:intl/intl.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 class ReportTab extends StatefulWidget {
   const ReportTab({super.key});
 
@@ -153,7 +150,7 @@ class _ReportTabState extends State<ReportTab> {
                             };
                           }).toList();
 
-                          for (int i = 0; i < itemList.length; i++) {
+                          for (int i = 0; i < users.length; i++) {
                             reports.add({
                               'timein': itemList[i]['Timestamp'],
                               'name': users.where(
@@ -239,7 +236,7 @@ class _ReportTabState extends State<ReportTab> {
                                 ),
                               ],
                               rows: [
-                                for (int i = 0; i < itemList.length; i++)
+                                for (int i = 0; i < users.length; i++)
                                   DataRow(cells: [
                                     DataCell(
                                       TextWidget(
@@ -419,10 +416,23 @@ class _ReportTabState extends State<ReportTab> {
       ),
     );
 
-    await Printing.layoutPdf(onLayout: (format) async => pdf.save());
+    final Uint8List pdfBytes = await pdf.save();
 
-    final output = await getTemporaryDirectory();
-    final file = io.File("${output.path}/report.pdf");
-    await file.writeAsBytes(await pdf.save());
+// Share the PDF using the Printing package
+    await Printing.sharePdf(
+      bytes: pdfBytes,
+      filename: 'report.pdf',
+    );
+
+// Optional: Handle the PDF bytes for web
+    if (kIsWeb) {
+      final blob = html.Blob([pdfBytes]);
+      final url = html.Url.createObjectUrlFromBlob(blob);
+      final anchor = html.AnchorElement(href: url)
+        ..target = 'blank'
+        ..download = 'report.pdf'
+        ..click();
+      html.Url.revokeObjectUrl(url);
+    }
   }
 }
